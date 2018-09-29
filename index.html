@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <ol>
+            <p>{{ message }}</p>
+            <todo-item v-for='item in toBuyList' :key='item.id' v-bind:todo='item'>
+                {{ item.text }}
+            </todo-item>
+        </ol>
+    </div>
+    <div id="app2">
+        <p>date cached: {{ message + printNowCached }}</p>
+        <p>date not cached: {{ message + printNow() }}</p>
+        <button v-on:click='methodsReverse'>methodsReverse</button>
+    </div>
+</body>
+</html>
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script>
+    Vue.component('todo-item', {
+        props: ['todo'],
+        template: '<li>{{ todo.text }}</li>'
+    })
+
+    var app = new Vue({
+        el: '#app',
+        data: {
+            message: 'to do list',
+            toBuyList: [
+                {id: 1, text: 'rice'},
+                {id: 2, text: 'bumburger'},
+                {id: 3, text: 'bacon'},
+                {id: 4, text: 'lemon'},
+                {id: 5, text: 'tomato'}
+            ],
+            show: true,
+        }
+    })
+
+    var app2 = new Vue({
+        el: '#app2',
+        data: {
+            message: 'a b c d e',
+        },
+        methods: {
+            methodsReverse: function () {
+                this.message = this.message.split(' ').reverse().join(' ')
+            },
+            printNow: function () {
+                // Date.now() はリアクティブな依存ではないため、次の算出プロパティは二度と更新されない
+                return Date.now()
+            }
+        },
+        // 算出プロパティは依存関係にもとづきキャッシュされる
+        computed: {
+            printNowCached: function () {
+                // Date.now() はリアクティブな依存ではないため、次の算出プロパティは二度と更新されない
+                return Date.now()
+            }
+        }
+    })
+
+</script>
